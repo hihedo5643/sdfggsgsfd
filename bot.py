@@ -1,111 +1,86 @@
 import os
-import logging
-import asyncio
-from typing import Optional
-import resend
+from resend import Resend
 
-# Initialize Resend with API key
-resend.api_key = os.getenv("RESEND_API_KEY")
+# Initialize Resend client
+client = Resend(api_key=os.environ.get("RESEND_API_KEY"))
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
-
-RECIPIENT_EMAIL = "hihedo1099@proton.me"
-
-def send_log_via_email(subject: str, message: str, log_content: Optional[str] = None) -> bool:
+def send_onboarding_email(to_email: str, user_name: str):
     """
-    Send log information via email using Resend API.
+    Send onboarding email to the user
     
     Args:
-        subject: Email subject
-        message: Main message body
-        log_content: Optional log content to include
-        
-    Returns:
-        bool: True if email sent successfully, False otherwise
+        to_email: Recipient email address
+        user_name: Name of the user
     """
     try:
-        email_body = message
-        if log_content:
-            email_body += f"\n\n--- Log Content ---\n{log_content}"
-        
-        response = resend.Emails.send({
-            "from": "onboarding@resend.dev",
-            "to": RECIPIENT_EMAIL,
-            "subject": subject,
-            "html": f"<p>{email_body.replace(chr(10), '<br>')}</p>"
-        })
-        
-        logger.info(f"Email sent successfully to {RECIPIENT_EMAIL}")
-        return True
-        
+        email = client.emails.send(
+            {
+                "from": "onboarding@resend.dev",
+                "to": to_email,
+                "subject": "Welcome to Our Service",
+                "html": f"""
+                <html>
+                    <body>
+                        <h1>Welcome {user_name}!</h1>
+                        <p>Thank you for signing up. We're excited to have you on board.</p>
+                        <p>If you have any questions, feel free to reach out to us.</p>
+                        <br>
+                        <p>Best regards,<br>The Team</p>
+                    </body>
+                </html>
+                """
+            }
+        )
+        print(f"Email sent successfully to {to_email}")
+        return email
     except Exception as e:
-        logger.error(f"Failed to send email via Resend API: {str(e)}")
-        return False
+        print(f"Error sending email: {str(e)}")
+        raise
 
-def send_log_via_email_with_attachment(subject: str, message: str, log_file_path: str) -> bool:
+def send_notification_email(to_email: str, subject: str, message: str):
     """
-    Send log information via email with file attachment using Resend API.
+    Send notification email to the user
     
     Args:
+        to_email: Recipient email address
         subject: Email subject
-        message: Main message body
-        log_file_path: Path to log file to attach
-        
-    Returns:
-        bool: True if email sent successfully, False otherwise
+        message: Email message content
     """
     try:
-        if not os.path.exists(log_file_path):
-            logger.error(f"Log file not found: {log_file_path}")
-            return False
-        
-        with open(log_file_path, 'r') as f:
-            log_content = f.read()
-        
-        # For Resend API, we'll include the log content in the email body
-        # since attachments require the API to support them
-        email_body = message
-        if log_content:
-            email_body += f"\n\n--- Log File Content ---\n{log_content}"
-        
-        response = resend.Emails.send({
-            "from": "onboarding@resend.dev",
-            "to": RECIPIENT_EMAIL,
-            "subject": subject,
-            "html": f"<p>{email_body.replace(chr(10), '<br>')}</p>"
-        })
-        
-        logger.info(f"Email with log content sent successfully to {RECIPIENT_EMAIL}")
-        return True
-        
+        email = client.emails.send(
+            {
+                "from": "onboarding@resend.dev",
+                "to": to_email,
+                "subject": subject,
+                "html": f"""
+                <html>
+                    <body>
+                        <h2>{subject}</h2>
+                        <p>{message}</p>
+                        <br>
+                        <p>Best regards,<br>The Team</p>
+                    </body>
+                </html>
+                """
+            }
+        )
+        print(f"Notification email sent to {to_email}")
+        return email
     except Exception as e:
-        logger.error(f"Failed to send email via Resend API: {str(e)}")
-        return False
-
-async def main():
-    """Main function to demonstrate email sending."""
-    logger.info("Starting bot...")
-    
-    # Example: Send a simple log email
-    send_log_via_email(
-        subject="Bot Status Report",
-        message="Bot is running successfully.",
-        log_content="No errors detected."
-    )
-    
-    # Example: Send an error notification
-    send_log_via_email(
-        subject="Bot Error Alert",
-        message="An error occurred during bot execution.",
-        log_content="Error traceback information would go here."
-    )
-    
-    logger.info("Bot operations completed.")
+        print(f"Error sending notification email: {str(e)}")
+        raise
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Example usage
+    test_email = "user@example.com"
+    test_user = "John Doe"
+    
+    # Send onboarding email
+    send_onboarding_email(test_email, test_user)
+    
+    # Send notification email
+    send_notification_email(
+        test_email,
+        "Important Update",
+        "This is an important notification for you."
+    )
