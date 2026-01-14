@@ -18,7 +18,7 @@ if not TOKEN:
     raise RuntimeError("Environment variable API_TOKEN is required")
 
 try:
-    ADMIN_ID = int(os. getenv("ADMIN_ID", "0"))
+    ADMIN_ID = int(os.  getenv("ADMIN_ID", "0"))
 except ValueError:
     ADMIN_ID = 0
 
@@ -55,14 +55,14 @@ def log_admin_communication(sender, user_id, message_text):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     file_exists = os.path.isfile(LOG_PATH)
     with open(LOG_PATH, "a", encoding="utf-8", newline='') as csvfile:
-        writer = csv. writer(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+        writer = csv.  writer(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
         if not file_exists:
-            writer. writerow(["timestamp", "sender", "user_id", "text"])
+            writer.  writerow(["timestamp", "sender", "user_id", "text"])
         writer.writerow([timestamp, sender, user_id, message_text])
 
 # ======= КОНСТАНТИ МАГАЗИНУ =======
 WELCOME_TEXT = (
-    "<b>Ласкаво просимо до нашого магазину!   🛍️</b>\n\n"
+    "<b>Ласкаво просимо до нашого магазину!    🛍️</b>\n\n"
     "Оберіть, як ми можемо вам допомогти:"
 )
 
@@ -74,7 +74,7 @@ ABOUT_TEXT = (
     "✅ Доставка по всій Україні\n"
     "✅ Швидка обробка замовлень\n"
     "✅ Гарантія якості\n\n"
-    "Контакти:   +38 (095) 123-45-67\n"
+    "Контакти:    +38 (095) 123-45-67\n"
     "Email: shop@example.com\n"
     "Телеграм канал: @betaPapiros"
 )
@@ -94,7 +94,8 @@ ORDER_INSTRUCTIONS_TEXT = (
     "<b>📦 Замовлення товару</b>\n\n"
     "Будь ласка, надішліть нам посилання на товар з нашого каналу:\n\n"
     "<b>@betaPapiros</b>\n\n"
-    "Скопіюйте посилання на повідомлення з товаром і надішліть його нам."
+    "Скопіюйте посилання на повідомлення з товаром і надішліть його нам.\n\n"
+    "📝 <i>Або напишіть назву товару вручну, якщо у вас немає посилання. </i>"
 )
 
 CHAT_START_TEXT = (
@@ -110,7 +111,7 @@ CHAT_CLOSED_TEXT = (
 
 ADMIN_CHAT_CLOSED_TEXT = (
     "Чат закритий ✓\n"
-    "Клієнт:   <code>%s</code>"
+    "Клієнт:    <code>%s</code>"
 )
 
 # ======= Функція для перевірки робочого часу =======
@@ -157,7 +158,7 @@ def simulate_user_activity():
             f"------------------------------"
         )
         print(out)
-        logger.info(f"[IDLE MODE] #{idle_counter}:   {timestamp} → {activity}")
+        logger.info(f"[IDLE MODE] #{idle_counter}:    {timestamp} → {activity}")
     except Exception as e:
         logger.error(f"Error in simulate_user_activity: {e}")
 
@@ -166,12 +167,12 @@ def idle_mode_worker():
     while not idle_stop_event.is_set():
         try:
             wait_time = random.randint(idle_min_interval, idle_max_interval)
-            logger. info(f"[IDLE MODE] Очікування {wait_time//60} хвилин ({wait_time} с) до наступної симуляції...")
+            logger.  info(f"[IDLE MODE] Очікування {wait_time//60} хвилин ({wait_time} с) до наступної симуляції...")
             if idle_stop_event.wait(timeout=wait_time):
                 break
             simulate_user_activity()
         except Exception as e:
-            logger.  error(f"[IDLE MODE] Помилка:   {e}")
+            logger.  error(f"[IDLE MODE] Помилка:    {e}")
             time.sleep(5)
 
 def start_idle_mode():
@@ -187,20 +188,20 @@ def start_idle_mode():
 
 def stop_idle_mode():
     global idle_thread
-    try:
+    try: 
         if idle_thread is not None:
             idle_stop_event.set()
             idle_thread.join(timeout=2)
             idle_thread = None
-            logger.  info("[IDLE MODE] Потік зупинен")
-    except Exception as e:  
+            logger.   info("[IDLE MODE] Потік зупинен")
+    except Exception as e:   
         logger.error(f"Error stopping idle mode: {e}")
 
 # ======= Функція для реєстрації вебхука =======
 def register_webhook():
     url = f"https://api.telegram.org/bot{TOKEN}/setWebhook"
     payload = {
-        "url":   WEBHOOK_URL,
+        "url":    WEBHOOK_URL,
         "allowed_updates": ["message", "callback_query"]
     }
     try:
@@ -208,10 +209,10 @@ def register_webhook():
         resp.raise_for_status()
         result = resp.json()
         if result.get("ok"):
-            logger.info(f"✅ Вебхук зареєстрований:  {WEBHOOK_URL}")
+            logger.info(f"✅ Вебхук зареєстрований:   {WEBHOOK_URL}")
             return True
         else:
-            logger.error(f"❌ Помилка:   {result.get('description')}")
+            logger.error(f"❌ Помилка:    {result.get('description')}")
             return False
     except Exception as e:
         logger.  error(f"❌ Помилка реєстрації вебхука: {e}")
@@ -232,11 +233,11 @@ def main_menu_markup():
         "keyboard": [
             [{"text": "🛒 Замовити товар"}],
             [{"text": "❓ Швидкі відповіді"}],
-            [{"text": "📌 Про нас"}, {"text": "💬 Написати адміну"}],
+            [{"text":  "📌 Про нас"}, {"text": "💬 Написати адміну"}],
         ],
         "resize_keyboard": True,
         "one_time_keyboard": False,
-        "input_field_placeholder": "Виберіть опцію.. .",
+        "input_field_placeholder": "Виберіть опцію..  .",
     }
 
 def user_finish_markup():
@@ -250,7 +251,7 @@ def admin_chat_markup():
     """Розмітка для адміністратора під час спілкування з клієнтом"""
     return {
         "keyboard": [[{"text": "✓ Завершити чат"}]],
-        "resize_keyboard":   True,
+        "resize_keyboard":    True,
         "one_time_keyboard": False,
     }
 
@@ -261,7 +262,7 @@ def admin_reply_markup(user_id):
                 {"text": "✉️ Відповісти", "callback_data": f"reply_{user_id}"},
             ],
             [
-                {"text": "✗ Закрити", "callback_data":  f"close_{user_id}"},
+                {"text": "✗ Закрити", "callback_data":   f"close_{user_id}"},
             ],
         ]
     }
@@ -273,8 +274,8 @@ def quick_answers_markup():
         "inline_keyboard": [
             [{"text": "🚚 Як здійснюється доставка?", "callback_data": "qa_delivery"}],
             [{"text": "💰 Які способи оплати?", "callback_data": "qa_payment"}],
-            [{"text": "🔄 Як повернути товар?", "callback_data":  "qa_return"}],
-            [{"text": "❓ Як замовити товар?", "callback_data":  "qa_order"}],
+            [{"text": "🔄 Як повернути товар?", "callback_data":   "qa_return"}],
+            [{"text": "❓ Як замовити товар?", "callback_data":   "qa_order"}],
             [{"text": "🏠 Назад", "callback_data": "back_to_menu"}],
         ]
     }
@@ -337,7 +338,7 @@ def phone_request_markup():
     return {
         "keyboard": [
             [{"text": "☎️ Поділитися номером телефону", "request_contact": True}],
-            [{"text": "❌ Скасувати", "text":  "back_to_menu"}],
+            [{"text":  "❌ Скасувати", "text":   "back_to_menu"}],
         ],
         "resize_keyboard": True,
         "one_time_keyboard": True,
@@ -374,8 +375,8 @@ def edit_message(chat_id, message_id, text, reply_markup=None, parse_mode="HTML"
         resp = requests.post(url, json=payload, timeout=8)
         resp.raise_for_status()
         return resp.json()
-    except Exception as e: 
-        logger.error(f"Failed to edit message:  {e}")
+    except Exception as e:  
+        logger.error(f"Failed to edit message:   {e}")
         return None
 
 def send_media(chat_id, msg):
@@ -392,7 +393,7 @@ def send_media(chat_id, msg):
                 url = f"https://api.telegram.org/bot{TOKEN}/{api}"
                 payload = {"chat_id": chat_id, key: file_id}
                 if "caption" in msg:
-                    payload["caption"] = msg. get("caption")
+                    payload["caption"] = msg.  get("caption")
                 try:
                     resp = requests.post(url, json=payload, timeout=8)
                     resp.raise_for_status()
@@ -412,12 +413,12 @@ def format_order(order_data):
     return "\n".join(parts)
 
 def validate_product_link(text):
-    """Проверяе��, похожа ли ссылка на валидную Telegram ссылку"""
+    """Проверяет, похожа ли ссылка на валидную Telegram ссылку"""
     # Ищет t.me ссылки
-    if "t.me" in text. lower() or "telegram.me" in text.lower():
+    if "t.me" in text.  lower() or "telegram. me" in text.lower():
         return True
     # Ищет ссылки на @betaPapiros с ID сообщения
-    if "@betapapiros" in text. lower() and re.search(r"/\d+", text):
+    if "@betapapiros" in text.  lower() and re.search(r"/\d+", text):
         return True
     return False
 
@@ -433,10 +434,10 @@ def handle_command(command, chat_id, msg, user_id):
         logger.info(f"[THREAD] Команда: {command} від {chat_id}")
         if chat_id == ADMIN_ID and command == "/help":
             send_message(chat_id, WELCOME_TEXT, parse_mode="HTML")
-        elif command. startswith("/start") or command == "🏠 Меню":
-            active_chats. pop(user_id, None)
-            admin_targets.pop(ADMIN_ID, None)
-            user_orders.pop(user_id, None)
+        elif command.  startswith("/start") or command == "🏠 Меню":
+            active_chats.  pop(user_id, None)
+            admin_targets. pop(ADMIN_ID, None)
+            user_orders. pop(user_id, None)
             user_phone.pop(user_id, None)
             send_message(chat_id, WELCOME_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
         elif command == "🛒 Замовити товар":
@@ -453,11 +454,11 @@ def handle_command(command, chat_id, msg, user_id):
                 if not is_working_hours():
                     send_message(chat_id, OFF_HOURS_TEXT, reply_markup=user_finish_markup(), parse_mode="HTML")
                 else:  
-                    send_message(chat_id, "Адміністратор прочитає ваше повідомлення найближчим часом..  .", reply_markup=user_finish_markup(), parse_mode="HTML")
+                    send_message(chat_id, "Адміністратор прочитає ваше повідомлення найближчим часом..   .", reply_markup=user_finish_markup(), parse_mode="HTML")
                 notif = (
                     f"<b>НОВИЙ ЗАПИТ ВІД КЛІЄНТА</b>\n\n"
                     f"User ID: <code>{chat_id}</code>\n"
-                    f"Час:   {datetime.now().strftime('%H:%M:%S')}"
+                    f"Час:    {datetime.now().strftime('%H:%M:%S')}"
                 )
                 send_message(ADMIN_ID, notif, parse_mode="HTML", reply_markup=admin_reply_markup(chat_id))
                 if any(k in msg for k in ("photo", "document", "video", "audio", "voice")):
@@ -466,10 +467,10 @@ def handle_command(command, chat_id, msg, user_id):
                 if not is_working_hours():
                     send_message(chat_id, OFF_HOURS_TEXT, reply_markup=user_finish_markup(), parse_mode="HTML")
                 else:
-                    send_message(chat_id, "Ваше повідомлення вже відправлено.   Очікуйте..  .", reply_markup=user_finish_markup(), parse_mode="HTML")
+                    send_message(chat_id, "Ваше повідомлення вже відправлено.    Очікуйте..   .", reply_markup=user_finish_markup(), parse_mode="HTML")
         elif command == "✓ Завершити" and chat_id in active_chats:
-            active_chats. pop(chat_id, None)
-            if admin_targets.get(ADMIN_ID) == chat_id:
+            active_chats.  pop(chat_id, None)
+            if admin_targets. get(ADMIN_ID) == chat_id:
                 admin_targets.pop(ADMIN_ID, None)
             send_message(chat_id, CHAT_CLOSED_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
             send_message(ADMIN_ID, f"Клієнт завершив чат", parse_mode="HTML")
@@ -478,7 +479,7 @@ def handle_command(command, chat_id, msg, user_id):
             target = admin_targets.get(ADMIN_ID)
             if target:
                 active_chats.pop(target, None)
-                admin_targets. pop(ADMIN_ID, None)
+                admin_targets.  pop(ADMIN_ID, None)
                 send_message(target, CHAT_CLOSED_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
                 send_message(ADMIN_ID, f"Чат закритий", parse_mode="HTML")
                 send_message(ADMIN_ID, WELCOME_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
@@ -488,12 +489,12 @@ def handle_command(command, chat_id, msg, user_id):
         elif command == "🏠 До меню" and chat_id == ADMIN_ID:
             target = admin_targets.get(ADMIN_ID)
             if target:
-                active_chats. pop(target, None)
-                admin_targets.pop(ADMIN_ID, None)
+                active_chats.  pop(target, None)
+                admin_targets. pop(ADMIN_ID, None)
             send_message(ADMIN_ID, WELCOME_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
         else:
-            send_message(chat_id, "Команда не розпізнана.   Виберіть опцію з меню.", reply_markup=main_menu_markup(), parse_mode="HTML")
-    except Exception as e: 
+            send_message(chat_id, "Команда не розпізнана.    Виберіть опцію з меню.", reply_markup=main_menu_markup(), parse_mode="HTML")
+    except Exception as e:  
         logger.error(f"[THREAD ERROR] {e}", exc_info=True)
 
 # ======= Webhook handler =======
@@ -514,7 +515,7 @@ def webhook():
                 cb = update["callback_query"]
                 data = cb.get("data", "")
                 from_id = cb["from"]["id"]
-                message = cb. get("message") or {}
+                message = cb.  get("message") or {}
                 chat_id = message.get("chat", {}).get("id")
                 message_id = message.get("message_id")
 
@@ -527,7 +528,7 @@ def webhook():
                 if data == "back_to_menu":
                     edit_message(chat_id, message_id, WELCOME_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
                     user_orders.pop(chat_id, None)
-                    user_phone. pop(chat_id, None)
+                    user_phone.  pop(chat_id, None)
                     return "ok", 200
 
                 # Back to link selection (after choosing delivery)
@@ -536,12 +537,12 @@ def webhook():
                     return "ok", 200
 
                 # ===== ДОСТАВКА =====
-                if data. startswith("delivery_"):
-                    delivery = data.split("_")[1]
+                if data.  startswith("delivery_"):
+                    delivery = data. split("_")[1]
                     delivery_map = {
                         "ukrposhta": "🏤 Укрпошта (2-5 днів)",
                         "novaposhta": "📦 Нова Пошта (1-2 дні)",
-                        "meest":  "📦 Meest Express (1-2 дні)",
+                        "meest":   "📦 Meest Express (1-2 дні)",
                         "pickup": "🚗 Самовивіз Київ"
                     }
                     delivery_text = delivery_map.get(delivery, delivery)
@@ -549,27 +550,27 @@ def webhook():
 
                     # Запрашиваем номер телефону через Telegram контакт
                     user_orders[chat_id]["status"] = "waiting_phone"
-                    send_message(chat_id, "<b>☎️ Поділіться своїм номером телефону</b>\n\nНатисніть на кнопку нижче для автоматичної передачі вашого номера.", reply_markup=phone_request_markup(), parse_mode="HTML")
+                    send_message(chat_id, "<b>☎️ Поділіться своїм номером телефону</b>\n\nНатисніть на кнопку нижче для автоматичного надсилання:", reply_markup=phone_request_markup(), parse_mode="HTML")
                     return "ok", 200
 
                 # ===== ПІДТВЕРДЖЕННЯ ЗАМОВЛЕННЯ =====
-                if data.startswith("confirm_order_"):
+                if data. startswith("confirm_order_"):
                     try:
                         user_id = int(data.split("_", 2)[2])
                     except Exception as e:
-                        logger.error(f"Error parsing user_id from confirm_order:   {e}")
+                        logger.error(f"Error parsing user_id from confirm_order:    {e}")
                         return "ok", 200
                     
-                    if user_id in user_orders:   
+                    if user_id in user_orders:    
                         order = user_orders[user_id]
                         
                         # Отправляем админу с пометкой ЗАКАЗА
                         admin_notification = (
                             f"<b>🛒 НОВЕ ЗАМОВЛЕННЯ</b>\n\n"
-                            f"<b>Посилання на товар:</b> {order. get('посилання', 'не вказано')}\n"
+                            f"<b>Посилання на товар:</b> {order.  get('посилання', 'не вказано')}\n"
                             f"<b>Ім'я користувача:</b> @{order.get('username', 'не вказано')}\n"
-                            f"<b>Номер телефону:</b> {order. get('номер телефону', 'не вказано')}\n"
-                            f"<b>Спосіб доставки:</b> {order.get('доставка', 'не вказано')}\n\n"
+                            f"<b>Номер телефону:</b> {order.  get('номер телефону', 'не вказано')}\n"
+                            f"<b>Спосіб доставки:</b> {order. get('доставка', 'не вказано')}\n\n"
                             f"<b>User ID:</b> <code>{user_id}</code>\n"
                             f"<b>Час:</b> {datetime.now().strftime('%H:%M:%S')}"
                         )
@@ -580,41 +581,41 @@ def webhook():
                         send_message(user_id, (
                             f"<b>✅ Замовлення прийнято!</b>\n\n"
                             f"Ваші дані відправлені адміністратору.\n"
-                            f"Очікуйте дзвінку на номер:   <code>{order.get('номер телефону', 'не вказано')}</code>\n\n"
-                            f"Дякуємо за замовлення!   🙏"
+                            f"Очікуйте дзвінку на номер:    <code>{order.get('номер телефону', 'не вказано')}</code>\n\n"
+                            f"Дякуємо за замовлення!    🙏"
                         ), reply_markup=main_menu_markup(), parse_mode="HTML")
                         
                         # Логирование
-                        log_admin_communication("user", user_id, f"Заказ:   {order.get('посиланн��')}")
+                        log_admin_communication("user", user_id, f"Заказ:    {order. get('посилання')}")
                         
                         # Очистка данных заказа
-                        user_orders. pop(user_id, None)
-                        user_phone.pop(user_id, None)
+                        user_orders.  pop(user_id, None)
+                        user_phone. pop(user_id, None)
                     
                     return "ok", 200
 
                 # Admin reply
-                if data.startswith("reply_") and from_id == ADMIN_ID:  
+                if data. startswith("reply_") and from_id == ADMIN_ID:   
                     try:
-                        user_id = int(data.split("_", 1)[1])
+                        user_id = int(data. split("_", 1)[1])
                     except Exception as e:
-                        logger.error(f"Error parsing user_id:  {e}")
+                        logger.error(f"Error parsing user_id:   {e}")
                         return "ok", 200
                     active_chats[user_id] = "active"
                     admin_targets[from_id] = user_id
-                    edit_message(chat_id, message_id, message. get("text", ""), reply_markup=None)
+                    edit_message(chat_id, message_id, message.  get("text", ""), reply_markup=None)
                     send_message(from_id, f"Спілкуєтесь з клієнтом {user_id}\nТип 'завершити' для закриття", parse_mode="HTML", reply_markup=admin_chat_markup())
                     send_message(user_id, CHAT_START_TEXT, reply_markup=user_finish_markup(), parse_mode="HTML")
                     return "ok", 200
 
                 # Admin close chat
                 if data.startswith("close_") and from_id == ADMIN_ID:
-                    try: 
+                    try:  
                         user_id = int(data.split("_", 1)[1])
                     except Exception as e:
-                        logger. error(f"Error parsing user_id: {e}")
+                        logger.  error(f"Error parsing user_id:  {e}")
                         return "ok", 200
-                    active_chats.pop(user_id, None)
+                    active_chats. pop(user_id, None)
                     if admin_targets.get(from_id) == user_id:
                         admin_targets.pop(from_id, None)
                     send_message(user_id, CHAT_CLOSED_TEXT, reply_markup=main_menu_markup(), parse_mode="HTML")
@@ -639,11 +640,11 @@ def webhook():
 
             # ===== ОБРАБОТКА КОНТАКТА =====
             if "contact" in msg:
-                contact = msg. get("contact")
+                contact = msg.  get("contact")
                 phone_number = contact.get("phone_number", "")
                 
                 # Проверяем, ожидаем ли мы номер телефона
-                if chat_id in user_orders and user_orders[chat_id].get("status") == "waiting_phone":
+                if chat_id in user_orders and user_orders[chat_id]. get("status") == "waiting_phone":
                     user_orders[chat_id]["номер телефону"] = format_phone(phone_number)
                     user_orders[chat_id]["username"] = msg.get("from", {}).get("username", "не вказано")
                     user_orders[chat_id]["status"] = "waiting_confirmation"
@@ -651,15 +652,15 @@ def webhook():
                     # Показываем подтверждение заказа
                     order_summary = (
                         f"<b>📦 ПІДТВЕРДЖЕННЯ ЗАМОВЛЕННЯ</b>\n\n"
-                        f"<b>Посилання: </b> {user_orders[chat_id].get('посилання', 'не вказано')}\n"
-                        f"<b>Спосіб доставки:</b> {user_orders[chat_id].get('доставка', 'не вказано')}\n"
+                        f"<b>Посилання:  </b> {user_orders[chat_id].get('посилання', 'не вказано')}\n"
+                        f"<b>Спосіб доставки: </b> {user_orders[chat_id].get('доставка', 'не вказано')}\n"
                         f"<b>Номер телефону:</b> {user_orders[chat_id].get('номер телефону', 'не вказано')}\n"
                         f"<b>Ім'я користувача:</b> @{user_orders[chat_id]['username']}\n\n"
                         f"<b>Все вірно?  Натисніть 'Підтвердити' для відправки замовлення адміну.</b>"
                     )
 
                     send_message(chat_id, order_summary, reply_markup={
-                        "inline_keyboard":  [
+                        "inline_keyboard":   [
                             [{"text": "✅ Підтвердити замовлення", "callback_data": f"confirm_order_{chat_id}"}],
                             [{"text": "❌ Скасувати", "callback_data": "back_to_menu"}],
                         ]
@@ -674,15 +675,15 @@ def webhook():
                     # Показываем выбор доставки
                     send_message(chat_id, "<b>Оберіть спосіб доставки:</b>", reply_markup=delivery_markup(), parse_mode="HTML")
                     return "ok", 200
-                else:
-                    send_message(chat_id, "❌ Посилання не розпізнано.   Будь ласка, надішліть валидне посилання з каналу @betaPapiros", parse_mode="HTML")
+                else: 
+                    send_message(chat_id, "❌ Посилання не розпізнано.    Будь ласка, надішліть валидне посилання з каналу @betaPapiros або напишіть назву товару вручну.", reply_markup=None, parse_mode="HTML")
                     return "ok", 200
 
             # Проверяем команды
             command = None
             for possible in ("/start", "🏠 Меню", "🛒 Замовити товар", "❓ Швидкі відповіді", "📌 Про нас", "💬 Написати адміну", "✓ Завершити", "✓ Завершити чат", "🏠 До меню"):
                 if text.startswith(possible) or text == possible:
-                    command = text. strip()
+                    command = text.  strip()
                     logger.info(f"[WEBHOOK] Команда: {command}")
                     break
 
@@ -696,13 +697,13 @@ def webhook():
                     send_media(ADMIN_ID, msg)
                     send_message(ADMIN_ID, f"Медіа від клієнта {chat_id}", parse_mode="HTML", reply_markup=admin_reply_markup(chat_id))
                     log_admin_communication("user", chat_id, "[Медіа]")
-                elif text:  
+                elif text:   
                     send_message(ADMIN_ID, f"<b>Клієнт {chat_id}:</b>\n{text}", parse_mode="HTML", reply_markup=admin_reply_markup(chat_id))
                     log_admin_communication("user", chat_id, text)
                 return "ok", 200
 
             # Если это сообщение от админа
-            if chat_id == ADMIN_ID:  
+            if chat_id == ADMIN_ID:   
                 target = admin_targets.get(ADMIN_ID)
                 if target:
                     if any(k in msg for k in ("photo", "document", "video", "audio", "voice")):
@@ -724,7 +725,7 @@ def webhook():
 def index():
     return "✅ Магазин запущен", 200
 
-if __name__ == "__main__":  
+if __name__ == "__main__":   
     start_idle_mode()
     register_webhook()
     port = int(os.getenv("PORT", "5000"))
