@@ -16,7 +16,7 @@ if not TOKEN:
     raise RuntimeError("Environment variable API_TOKEN is required")
 
 try:
-    ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))
+    ADMIN_ID = int(os. getenv("ADMIN_ID", "0"))
 except ValueError:
     ADMIN_ID = 0
 
@@ -57,9 +57,9 @@ def log_admin_communication(sender, user_id, message_text):
     file_exists = os.path.isfile(LOG_PATH)
     try:
         with open(LOG_PATH, "a", encoding="utf-8", newline='') as csvfile:
-            writer = csv. writer(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
+            writer = csv.  writer(csvfile, delimiter=',', quoting=csv.QUOTE_ALL)
             if not file_exists:
-                writer. writerow(["timestamp", "sender", "user_id", "text"])
+                writer.  writerow(["timestamp", "sender", "user_id", "text"])
             writer.writerow([timestamp, sender, user_id, message_text])
     except Exception as e:
         logger.error(f"Log error: {e}")
@@ -67,7 +67,7 @@ def log_admin_communication(sender, user_id, message_text):
 # ======= ТЕКСТОВІ КОНСТАНТИ =======
 TEXTS = {
     "welcome": (
-        "<b>🛍️ Ласкаво просимо!  </b>\n\n"
+        "<b>🛍️ Ласкаво просимо!   </b>\n\n"
         "Оберіть, як ми можемо вам допомогти:"
     ),
     "about": (
@@ -81,7 +81,7 @@ TEXTS = {
         "📱 Канал:  @betaPapiros"
     ),
     "order_help": (
-        "<b>📦 Як замовити?  </b>\n\n"
+        "<b>📦 Як замовити?   </b>\n\n"
         "1️⃣ Натисніть '🛒 Замовити товар'\n"
         "2️⃣ Напишіть посилання або назву товару\n"
         "3️⃣ Виберіть доставку\n"
@@ -119,21 +119,21 @@ TEXTS = {
         "Напишіть своє питання..."
     ),
     "chat_end": (
-        "<b>✅ Дякуємо!  </b>\n\n"
+        "<b>✅ Дякуємо!   </b>\n\n"
         "Чат завершено.  До слова!"
     ),
     "order_sent": (
-        "<b>✅ Замовлення отримано! </b>\n\n"
+        "<b>✅ Замовлення отримано!  </b>\n\n"
         "Адміністратор розглянув ваше замовлення\n"
         "і скоро зв'яжеться з вами.\n\n"
-        "Дякуємо за замовлення!  🙏"
+        "Дякуємо за замовлення!   🙏"
     ),
     "ask_product": (
-        "<b>📦 Що ви хочете замовити?</b>\n\n"
+        "<b>📦 Що ви хочете замовити? </b>\n\n"
         "✏️ Напишіть:\n"
         "• Посилання на товар з @betaPapiros\n"
         "• Або просто назву/опис товару\n\n"
-        "Приклад: 'Elektronny sigara VAPE 5000'\n"
+        "Приклад:  'Elektronny sigara VAPE 5000'\n"
         "або 't. me/betaPapiros/123'"
     ),
     "ask_delivery": (
@@ -141,7 +141,7 @@ TEXTS = {
     ),
     "order_received": (
         "<b>📬 ЗАМОВЛЕННЯ</b>\n\n"
-        "<b>Товар: </b> {product}\n"
+        "<b>Товар:</b> {product}\n"
         "<b>Доставка:</b> {delivery}\n\n"
         "<b>User ID:</b> <code>{user_id}</code>\n"
         "<b>Час: </b> {time}"
@@ -159,7 +159,7 @@ def get_main_menu():
         ],
         "resize_keyboard": True,
         "one_time_keyboard": False,
-        "input_field_placeholder": "Виберіть опцію.. .",
+        "input_field_placeholder": "Виберіть опцію...",
     }
 
 def get_questions_menu():
@@ -167,7 +167,7 @@ def get_questions_menu():
     return {
         "inline_keyboard": [
             [{"text": "📦 Як замовити?", "callback_data": "q_order"}],
-            [{"text": "🚚 Доставка", "callback_data":  "q_delivery"}],
+            [{"text": "🚚 Доставка", "callback_data": "q_delivery"}],
             [{"text": "💳 Оплата", "callback_data":  "q_payment"}],
             [{"text": "🔄 Повернення", "callback_data": "q_return"}],
             [{"text": "⬅️ Назад", "callback_data": "menu_main"}],
@@ -229,8 +229,8 @@ def idle_worker():
             if idle_stop_event.wait(timeout=wait):
                 break
             simulate_user_activity()
-        except Exception as e:
-            logger.error(f"Idle worker error:  {e}")
+        except Exception as e: 
+            logger.error(f"Idle worker error: {e}")
             time.sleep(5)
 
 def start_idle_mode():
@@ -283,11 +283,11 @@ def delete_webhook():
 
 # ======= ВІДПРАВКА ПОВІДОМЛЕНЬ =======
 def send_msg(chat_id, text, markup=None, parse_mode="HTML"):
-    """Відправляє повідомлення"""
+    """Відправляє нове повідомлення"""
     if not chat_id or not text: 
-        logger.error(f"Invalid message params: chat_id={chat_id}, text={text[: 20] if text else 'None'}")
+        logger.error(f"Invalid message params: chat_id={chat_id}")
         return False
-    
+
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     payload = {
         "chat_id": chat_id,
@@ -307,22 +307,22 @@ def send_msg(chat_id, text, markup=None, parse_mode="HTML"):
         return False
 
 def edit_msg(chat_id, msg_id, text, markup=None, parse_mode="HTML"):
-    """Редагує повідомлення"""
+    """Редагує повідомлення (ТІЛЬКИ INLINE КЛАВІАТУРА)"""
     if not chat_id or not msg_id or not text:
         logger.error(f"Invalid edit params: chat_id={chat_id}, msg_id={msg_id}")
         return False
-    
+
     url = f"https://api.telegram.org/bot{TOKEN}/editMessageText"
     payload = {
-        "chat_id":  chat_id,
+        "chat_id": chat_id,
         "message_id": msg_id,
         "text": text,
         "parse_mode": parse_mode,
     }
-    if markup:
+    if markup: 
         payload["reply_markup"] = json.dumps(markup)
     try:
-        resp = requests.post(url, json=payload, timeout=8)
+        resp = requests. post(url, json=payload, timeout=8)
         if not resp.json().get("ok"):
             logger.warning(f"Edit message failed: {resp.json().get('description')}")
             return False
@@ -337,7 +337,7 @@ def check_hours():
     now = datetime.utcnow() + timedelta(hours=2)
     day = now.weekday()
     time_min = now.hour * 60 + now.minute
-    
+
     if day >= 5:  # Сб-Вс
         return False
     if day == 4:  # Пт
@@ -349,10 +349,10 @@ def process_command(cmd, chat_id, user_id):
     """Обробляє команди в окремому потоці"""
     try:
         logger.info(f"[COMMAND] {cmd} from {chat_id}")
-        
+
         with data_lock:
             if cmd == "/start" or cmd == "🏠":
-                active_chats.pop(chat_id, None)
+                active_chats. pop(chat_id, None)
                 admin_targets.pop(ADMIN_ID, None)
                 user_orders.pop(chat_id, None)
                 send_msg(chat_id, TEXTS["welcome"], get_main_menu())
@@ -370,12 +370,12 @@ def process_command(cmd, chat_id, user_id):
             elif cmd == "💬 Взяти з адміном":
                 if chat_id not in active_chats:
                     active_chats[chat_id] = "pending"
-                    
+
                     if not check_hours():
                         send_msg(chat_id, TEXTS["off_hours"], get_main_menu())
                     else:
                         send_msg(chat_id, TEXTS["chat_start"], get_chat_menu())
-                    
+
                     admin_msg = (
                         f"<b>📬 Новий чат</b>\n\n"
                         f"User:  <code>{chat_id}</code>\n"
@@ -389,8 +389,8 @@ def process_command(cmd, chat_id, user_id):
                 send_msg(chat_id, TEXTS["chat_end"], get_main_menu())
                 send_msg(ADMIN_ID, "✅ Чат завершено")
                 log_admin_communication("user", chat_id, "Чат завершено")
-    
-    except Exception as e: 
+
+    except Exception as e:
         logger.error(f"Command processing error: {e}", exc_info=True)
 
 # ======= ОБРОБКА CALLBACK (ПОТІК) =======
@@ -398,7 +398,7 @@ def process_callback(cb_data, chat_id, msg_id, from_id, username):
     """Обробляє callback queries в окремому потоці"""
     try:
         logger.info(f"[CALLBACK] {cb_data} from {from_id} in {chat_id}")
-        
+
         with data_lock:
             # Меню питань
             if cb_data == "q_order":
@@ -409,16 +409,17 @@ def process_callback(cb_data, chat_id, msg_id, from_id, username):
                 edit_msg(chat_id, msg_id, TEXTS["payment_help"], get_questions_menu())
             elif cb_data == "q_return":
                 edit_msg(chat_id, msg_id, TEXTS["return_help"], get_questions_menu())
-            
+
             # Повернення в меню
             elif cb_data == "menu_main":
                 edit_msg(chat_id, msg_id, TEXTS["welcome"], get_main_menu())
                 user_orders. pop(chat_id, None)
             elif cb_data == "order_back":
-                edit_msg(chat_id, msg_id, TEXTS["ask_product"])
+                # Видаляємо inline клавіатуру та надсилаємо нове повідомлення
+                send_msg(chat_id, TEXTS["ask_product"])
                 user_orders. pop(chat_id, None)
-            
-            # Вибір доставки та передача адміну
+
+            # ===== ВИБІР ДОСТАВКИ І ПЕРЕДАЧА АДМІНУ =====
             elif cb_data. startswith("del_"):
                 delivery_map = {
                     "del_1": "🏤 Укрпошта (2-5 днів)",
@@ -426,30 +427,34 @@ def process_callback(cb_data, chat_id, msg_id, from_id, username):
                     "del_3": "📦 Meest (1-2 дні)",
                     "del_4": "🚗 Самовивіз Київ",
                 }
-                
+
                 if chat_id in user_orders and user_orders[chat_id]. get("status") == "waiting_delivery":
                     order = user_orders[chat_id]
                     order["delivery"] = delivery_map.get(cb_data, "? ")
                     order["username"] = username or "unknown"
                     order["status"] = "sent_to_admin"
-                    
-                    # Редагуємо повідомлення
+
+                    logger.info(f"[ORDER] Product:  {order. get('product')}, Delivery: {order.get('delivery')}")
+
+                    # Редагуємо повідомлення з кнопками
                     edit_msg(chat_id, msg_id, TEXTS["order_sent"], get_main_menu())
-                    
+
                     # Передаємо адміну
                     admin_msg = TEXTS["order_received"]. format(
-                        product=order. get("product", "? "),
-                        delivery=order. get("delivery", "?"),
+                        product=order. get("product", "?"),
+                        delivery=order.get("delivery", "?"),
                         user_id=chat_id,
                         time=datetime.now().strftime("%H:%M:%S")
                     )
                     send_msg(ADMIN_ID, admin_msg, get_admin_menu(chat_id))
-                    log_admin_communication("order", chat_id, f"Товар:  {order. get('product')} | Доставка: {order.get('delivery')}")
-                    
+                    log_admin_communication("order", chat_id, f"Товар:  {order.get('product')} | Доставка: {order.get('delivery')}")
+
                     # Активуємо чат
                     active_chats[chat_id] = "order"
                     admin_targets[ADMIN_ID] = chat_id
-            
+                else:
+                    logger.warning(f"Order not found for {chat_id} or wrong status")
+
             # Адмін - відповідь
             elif cb_data. startswith("reply_") and from_id == ADMIN_ID: 
                 try:
@@ -460,9 +465,10 @@ def process_callback(cb_data, chat_id, msg_id, from_id, username):
                         edit_msg(chat_id, msg_id, "✅ Ви відповідаєте клієнту")
                         send_msg(from_id, f"💬 Чат з {user_id}", get_chat_menu())
                         send_msg(user_id, "✅ Адмін відповідає.. .", get_chat_menu())
+                        logger.info(f"[ADMIN] Reply started with {user_id}")
                 except ValueError:
                     logger.error(f"Invalid user_id in reply callback: {cb_data}")
-            
+
             # Адмін - закрити
             elif cb_data. startswith("close_") and from_id == ADMIN_ID: 
                 try:
@@ -470,12 +476,13 @@ def process_callback(cb_data, chat_id, msg_id, from_id, username):
                     active_chats.pop(user_id, None)
                     admin_targets.pop(from_id, None)
                     send_msg(user_id, TEXTS["chat_end"], get_main_menu())
-                    send_msg(from_id, "✅ Чат закрито", get_main_menu())
+                    edit_msg(chat_id, msg_id, "✅ Чат закрито")
                     log_admin_communication("admin", user_id, "Чат закрито")
-                except ValueError:
-                    logger.error(f"Invalid user_id in close callback: {cb_data}")
-    
-    except Exception as e: 
+                    logger.info(f"[ADMIN] Chat closed with {user_id}")
+                except ValueError: 
+                    logger.error(f"Invalid user_id in close callback:  {cb_data}")
+
+    except Exception as e:
         logger.error(f"Callback processing error: {e}", exc_info=True)
 
 # ======= WEBHOOK HANDLER =======
@@ -489,41 +496,42 @@ def webhook():
         if not data:
             logger.warning("Empty webhook data")
             return "ok", 200
-        
+
         # ===== CALLBACK QUERIES =====
         if "callback_query" in data:
             cb = data["callback_query"]
-            cb_data = cb. get("data", "")
+            cb_data = cb.get("data", "")
             from_id = cb.get("from", {}).get("id")
             msg = cb.get("message") or {}
             chat_id = msg.get("chat", {}).get("id")
             msg_id = msg.get("message_id")
             username = cb.get("from", {}).get("username")
-            
+
             if chat_id and msg_id: 
+                logger.info(f"[CB] {cb_data} in {chat_id}")
                 threading.Thread(
                     target=process_callback,
                     args=(cb_data, chat_id, msg_id, from_id, username),
                     daemon=True
                 ).start()
             return "ok", 200
-        
+
         # ===== MESSAGES =====
         msg = data.get("message")
         if not msg:
             return "ok", 200
-        
+
         chat_id = msg.get("chat", {}).get("id")
         user_id = msg.get("from", {}).get("id")
         text = msg.get("text", "").strip()
-        username = msg.get("from", {}).get("username")
-        
-        if not chat_id or not user_id:
+        username = msg. get("from", {}).get("username")
+
+        if not chat_id or not user_id: 
             logger.warning("Invalid message data")
             return "ok", 200
-        
-        logger.info(f"[MESSAGE] {chat_id}:  {text[: 50]}")
-        
+
+        logger.info(f"[MSG] {chat_id}:  {text[: 50]}")
+
         # Команди
         if text in ["/start", "🏠", "🛒 Замовити товар", "❓ Питання", "📌 Про нас", "💬 Взяти з адміном", "✓ Завершити"]:
             threading.Thread(
@@ -532,19 +540,21 @@ def webhook():
                 daemon=True
             ).start()
             return "ok", 200
-        
+
         with data_lock:
-            # Опис товара
+            # ===== ОПИС ТОВАРА =====
             if chat_id in user_orders and user_orders[chat_id].get("status") == "waiting_product":
                 if text: 
                     user_orders[chat_id]["product"] = text
                     user_orders[chat_id]["status"] = "waiting_delivery"
+                    logger.info(f"[ORDER] Product received: {text}")
                     send_msg(chat_id, TEXTS["ask_delivery"], get_delivery_menu())
                 return "ok", 200
-            
-            # Активний чат з адміном (від клієнта)
+
+            # ===== АКТИВНИЙ ЧАТ З АДМІНОМ (від клієнта) =====
             if chat_id in active_chats and active_chats[chat_id] in ["active", "order", "pending"] and user_id != ADMIN_ID:
                 if text:
+                    logger.info(f"[CHAT_USER] {chat_id} -> admin: {text[: 50]}")
                     send_msg(ADMIN_ID, f"<b>💬 {chat_id}:</b>\n{text}", get_admin_menu(chat_id))
                     log_admin_communication("user", chat_id, text)
                     # Активуємо чат якщо був pending
@@ -552,26 +562,27 @@ def webhook():
                         active_chats[chat_id] = "active"
                         admin_targets[ADMIN_ID] = chat_id
                 return "ok", 200
-            
-            # Активний чат (від адміна)
+
+            # ===== АКТИВНИЙ ЧАТ (від адміна) =====
             if chat_id == ADMIN_ID: 
                 target = admin_targets.get(ADMIN_ID)
                 if target and text:
+                    logger.info(f"[CHAT_ADMIN] admin -> {target}: {text[:50]}")
                     send_msg(target, text, get_chat_menu())
                     log_admin_communication("admin", target, text)
                 return "ok", 200
-        
+
         return "ok", 200
-    
-    except Exception as e: 
-        logger.error(f"Webhook error: {e}", exc_info=True)
+
+    except Exception as e:
+        logger. error(f"Webhook error:  {e}", exc_info=True)
         return "error", 500
 
 @app.route("/", methods=["GET"])
 def index():
     return "✅ Shop is running", 200
 
-if __name__ == "__main__":
+if __name__ == "__main__": 
     start_idle_mode()
     register_webhook()
     port = int(os.getenv("PORT", "5000"))
@@ -582,3 +593,4 @@ if __name__ == "__main__":
     finally:
         stop_idle_mode()
         delete_webhook()
+        
