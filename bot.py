@@ -321,7 +321,6 @@ def phone_request_markup():
     return {
         "keyboard": [
             [{"text": "☎️ Поділитися номером телефону", "request_contact": True}],
-            [{"text":  "❌ Скасувати", "text":   "back_to_menu"}],
         ],
         "resize_keyboard":  True,
         "one_time_keyboard": True,
